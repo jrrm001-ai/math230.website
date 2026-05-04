@@ -1,0 +1,60 @@
+---
+title: "The Climate Atlas"
+description: |
+  Welcome to the website. I hope you enjoy it!
+site: distill::distill_website
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Learn more about creating websites with Distill at:
+# https://rstudio.github.io/distill/website.html
+
+# Learn more about publishing to GitHub Pages at:
+# https://rstudio.github.io/distill/publish_website.html#github-pages
+
+```
+
+
+
+```{r}
+library(aRtsy)
+library(ggplot2)
+
+set.seed(7)
+
+sky_palette1 <- c("#1B263B", "#415A77", "#778DA9")
+sky_palette2 <- c("#5D6D7E", "#AED6F1", "#D6E4F0")
+sky_palette3 <- c("#B0E0E6", "#FFFFFF", "#EAF4F4")
+
+art <- canvas_flow(
+  colors = sky_palette1,
+  background = "#0B1320",
+  lines = 1200,
+  lwd = 0.4
+)
+
+art <- art + canvas_flow(
+  colors = sky_palette2,
+  background = "transparent",
+  lines = 900,
+  lwd = 0.35
+)
+
+art <- art + canvas_flow(
+  colors = sky_palette3,
+  background = "transparent",
+  lines = 700,
+  lwd = 0.25
+)
+
+ggsave("sky_infographic3.png",
+       art,
+       width = 9,
+       height = 9,
+       dpi = 300)
+
+knitr::include_graphics("sky_infographic3.png")
+```
+

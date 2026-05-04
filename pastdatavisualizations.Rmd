@@ -1,0 +1,170 @@
+---
+title: "Past data visualizations"
+description: |
+  here are some data visualizations that i made in math230
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Generative Art Project
+
+```{r}
+library(aRtsy)
+```
+
+### Midnight Current
+```{r}
+set.seed(123)
+
+art1 <- canvas_flow(
+  colors = colorPalette("dark2"),
+  background = "#1C3461",
+  lines = 1300,
+  lwd = 0.05,
+  iterations = 100,
+  stepmax = 0.01,
+  polar = FALSE,
+  angles = NULL
+)
+
+saveCanvas(art1, "flow_field_art.png")
+
+knitr::include_graphics("flow_field_art.png")
+```
+Lines move across the canvas and slowly come together at a single point. It feels like a transition from disorder to structure, where things begin to take shape.
+
+
+### Blue Hurricane
+```{r}
+set.seed(321)
+
+colors <- colorPalette("dark2")
+
+art2 <- canvas_phyllotaxis(
+  colors,
+  background = "#2D383A",
+  iterations = 10000,
+  angle = 16.29,
+  size = .07,
+  alpha = 0.9,
+  p = .7
+)
+
+saveCanvas(art2, "phyllotaxis_art.png")
+
+knitr::include_graphics("phyllotaxis_art.png")
+```
+The structure feels like it’s drawing inward toward a center, creating a subtle sense of pull and convergence.
+
+
+### Spirit Under the Blue
+```{r}
+set.seed(7)
+
+bucknell_colors <- c("#FF6600", "#002D72", "#FFFFFF")
+
+art3 <- canvas_circlemap(
+  colors = bucknell_colors,
+  left = 0,
+  right = 16,
+  bottom = 0,
+  top = 1,
+  iterations = 13,
+  resolution = 1010
+)
+saveCanvas(art3, filename = "bucknell_art.png")
+knitr::include_graphics("bucknell_art.png")
+```
+A dreamlike collision of light and shadow, where warm and cool forces blur together into something cosmic.
+
+
+## GG-Plot Extension Project
+
+### GG-RIDGES
+```{r}
+library(ggplot2)
+library(ggridges)
+library(ggrain)
+library(Lock5Data)
+data("Cereal")
+
+ggplot(Cereal, aes(x = Calories, y = Company, fill = 0.5 - abs(0.5 - after_stat(ecdf)))) +
+  stat_density_ridges(geom = "density_ridges_gradient", calc_ecdf = TRUE) +
+  scale_fill_viridis_c(name = "Tail probability", direction = -1)
+```
+This ridgeline plot compares the distribution of cereal calories for companies G (General Mills), K (Kellogg's), and Q (Quaker). Most cereals for all three companies cluster around 110–150 calories (dark regions), while the yellow ends represent less common low- or high-calorie cereals; Kellogg’s appears to have two calorie clusters, while General Mills has a wider spread with some higher-calorie cereals.
+
+## Randomization Test
+
+What is the average pH level for a healthy body of water? According to the U.S. Environmental Protection Agency, the pH level of a body of water can have a large impact on the survival of the aquatic life that resides in the water. The pH level can range from 0 – 14, where a pH level of 7 is considered to be neutral (https://www.epa.gov/caddis/ph). 
+
+Suppose we are interested in determining whether the average pH level of Florida lakes differs from a neutral pH level. We have data on water quality measurements for a sample of lakes in Florida. This data includes information about the pH level of each lake, the amount of calcium and chlorophyll in the water of each lake, along with other measures of water quality.
+
+Do these data provide significant evidence that the average pH level of lakes in Florida is really different from a neutral pH level of 7?
+
+```{r}
+library(Lock5Data)
+data("FloridaLakes")
+attach(FloridaLakes)
+library(ggplot2)
+
+mean.og.sample = mean(pH)
+
+set.seed(230)
+randomization.mean = NULL
+
+for (b in 1:10000) {
+  my.resample = sample(pH + 0.41, length(pH), replace = TRUE)
+  randomization.mean[b] = mean(my.resample)
+}
+
+ggplot() + geom_histogram(aes(x = randomization.mean, y = after_stat(density)), bins = 20, fill = "black", alpha = 0.7)  + labs(x = "randomization values", title = "randomization distribution for the mean") + geom_density(aes(x = randomization.mean), col = "#AED6F1") + geom_vline(xintercept = 7, col = "#AED6F1") + geom_vline(xintercept = mean.og.sample, col = "#AED6F1")
+
+```
+
+
+The p-value is the probability that we would observe a statistic as extreme or more extreme than the observed statistic, assuming the null hypothesis is true. 
+So we will calculate the p-value as the proportion of all samples that produce a statistic as extreme or more extreme than the observed statistic, assuming the null hypothesis is true.
+
+What proportion of our samples produced a statistic as extreme or more extreme than our original sample mean?
+
+```{r}
+# calculating the p-value
+((2*(sum(randomization.mean <= mean.og.sample) + 1)) / (length(randomization.mean) + 1))
+```
+
+## Confidence Levels
+
+Suppose in a second random sample of 21 adults, the mean length of time a computer was used at home was 4.5 hours per week. Obtain a 95% confidence interval for the true mean number of hours that adults use computers at home using this new sample. Does the confidence interval generated from this new sample contain the true value of the parameter? 
+
+```{r, echo = FALSE}
+
+pop <- rnorm(10000, 5, 0.9)
+
+samp.means21 <- NULL
+
+for(i in 1:10000){
+  samp <- sample(pop, 21)
+  samp.means21[i] <- mean(samp)
+}
+
+ggplot() +
+  geom_histogram(aes(x = samp.means21, y = after_stat(density)), 
+                 bins = 25, fill = "black", alpha = 0.75) +
+  labs(x = "Sample mean values", 
+       title = "Sampling Distribution of the Sample Mean, n = 21")
+```
+
+```{r}
+5.3 + c(-1, 1) * qnorm(.975) * (0.196)
+```
+So the 95% confidence interval we generated does NOT contain the mean length of time a computer was used at home
+
+## Introductory Stats Dashboard
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("dashboard.png")
+```
+

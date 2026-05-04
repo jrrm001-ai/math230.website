@@ -1,0 +1,6 @@
+"0","p2 <- ggplot(cities, aes(elevation, fill = cities$climate_group)) +"
+"0","  geom_histogram(bins = 30, color = ""white"") +"
+"0","  labs(title = ""Distribution of City Elevations"","
+"0","       x = ""Elevation (m)"", y = ""Number of Cities"", fill = ""Climate"") +"
+"0","  theme_minimal()"
+"0","ggsave(""plot2_histogram_elevation.png"", p2, width = 8, height = 5)"

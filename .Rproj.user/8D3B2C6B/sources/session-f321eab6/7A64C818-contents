@@ -1,0 +1,77 @@
+\documentclass[10pt]{article}
+\usepackage[margin=.5in]{geometry}
+\usepackage{amsmath,amssymb,amsthm} % American Mathematical Society packages for typesetting math.
+\usepackage{enumerate} %Allows me to control numbering format for ordered lists.  The enumitem package has fancier options, but you can't use both.
+\usepackage{algorithm,algpseudocode} % Packages for typesetting pseduocode.
+\usepackage{tikz} % We may this later in the semester for drawing diagrams with LaTeX code.
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+
+\newcommand{\ZZ}{\mathbb{Z}} % Integers.
+\newcommand{\NN}{\mathbb{N}} % Natural Numbers.  NB: There are different definitions of natural numbers based on whether 0 is included.  For this class, 0 is a natural number.
+\newcommand{\QQ}{\mathbb{Q}} % Rational numbers.
+
+% Defines a simple command that will label your solution and enclose it in a box.  This version will run from page to page, so no more manually ending and restarting your solution boxes!
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\newcommand{\solution}[1]{
+  \begin{tcolorbox}[breakable,title=Solution \arabic{problem}:,title after break={Solution \arabic{problem}, continued},colframe=black,colback=white,colbacktitle=white,coltitle=black,fonttitle=\bfseries,titlerule=0mm,arc=0mm,lefttitle=-1pt]
+    #1
+  \end{tcolorbox}
+}
+
+% Replace these with your own information.  Remember to use \today.
+\title{CSCI 311 - Spring \the\year:\\Homework 10}
+\author{Edward Talmage}
+\date{Due on gradescope \textbf{Wednesday, April 29, \the\year}\\Based in part on problems in CLRS and other sources}
+
+\begin{document}
+\maketitle
+
+\subsection*{Instructions}
+\begin{itemize}
+\item You may work individually or in groups.  If you work in a group, upload only a {\bf single} copy of your answers to gradescope, then add your group members to the gradescope submission.  You must also include all group members in the LaTeX author block.
+\item After you solve the problems, typeset your final answers with LaTeX, compile to PDF, and upload the PDF to gradescope.  You will need to tell gradescope where in the document each solution is. They have a nice web-based GUI for this.
+\item As long as you draw neatly, label clearly, and refer to your figures in the text, you may draw figures by hand, scan them, and insert them as images.
+\item On the first page, start with the following, similar to the above title:
+  \begin{itemize}
+  \item Course and Assignment Numbers
+  \item Your name(s) (First Last, or equivalent)
+  \end{itemize}
+\item Delete this Instructions section.
+\item Use footnotes to indicate specific concepts and {\bf ideas you obtained in discussion with anyone outside your group}.
+\item Be clear, precise, and concise.  {\bf Always justify your answers.}
+\end{itemize}
+
+
+\hrule
+\begin{problem}
+  Explain how a node in a graph that has both incoming and outgoing edges can end up in a DFS tree by itself.  Draw an example of a graph and DFS forest where this happens.
+\end{problem}
+
+
+\begin{problem}
+Give a counterexample to disprove the following claim:
+\begin{claim} 
+If a directed graph $G = (V,E)$ contains a path from $u$ to $v$, for some $u,v\in V$, then any depth-first search must result in $discovered[v] \leq finished[u]$.  That is, $v$ must always be discovered before $u$ is finished.
+\end{claim}
+\end{problem}
+
+\begin{problem}
+Prove that a connected graph with unique edge weights (no two edges have the same weight) has exactly one MST.  {\em (Hint: See the proof of correctness for Kruskal's algorithm.)}
+\end{problem}
+
+\begin{problem}
+Consider the following topological sort algorithm: Repeatedly find a node with no incoming edges, put it at the head of the output list, and remove it and all edges outgoing from it from the graph.  When done, output the list as a topological sort.  Explain how to implement this algorithm in $O(|V|+|E|)$ time.  What happens if you run this algorithm on a graph with a cycle?
+\end{problem}
+
+\begin{problem}
+  Prove that the lightest edge in a graph is in some minimum spanning tree of the graph.
+\end{problem}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

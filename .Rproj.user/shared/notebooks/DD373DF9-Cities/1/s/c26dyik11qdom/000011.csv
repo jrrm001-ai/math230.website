@@ -1,0 +1,6 @@
+"0","p1 <- ggplot(cities, aes(elevation, avg_annual_precip, color = cities$climate_group)) +"
+"0","  geom_point() +"
+"0","  geom_smooth(method = ""lm"", se = FALSE) +"
+"0","  labs(title = ""Elevation vs. Annual Precipitation"","
+"0","       x = ""Elevation (m)"", y = ""Precipitation (in)"", color = ""Climate"")"
+"0","ggsave(""plot1_elevation_precip.png"", p1, width = 8, height = 5)"

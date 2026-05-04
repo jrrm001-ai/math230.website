@@ -1,0 +1,193 @@
+---
+title: "Cities Data"
+description: |
+  Some cool stuff w new data!
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Welcome to The Climate Atlas, a visual exhibit exploring the climate fingerprint of cities across the United States. The dataset behind this exhibit catalogs 236 U.S. cities (226 after cleaning out missing values) and describes each one through eleven variables — a mix of geography, atmosphere, and terrain. For every city we have its location (longitude, latitude, state), its Köppen climate classification, its elevation above sea level, its distance to the nearest coast, its average wind speed, two measures of nearby terrain ruggedness (elevation change within a 4 km and 8 km radius), and its average annual precipitation in inches.
+
+From these eleven variables, the exhibit focuses on six that tell the most compelling story about why American cities feel the way they do:
+
+**avg_annual_precip** — how wet a city is, the headline weather variable
+
+**elevation** — the height above sea level of a given city
+
+**distance_to_coast** — proximity to the ocean's moisture
+
+**wind** — the average breeze a resident actually feels
+
+**koppen / climate_group** — the official climate identity of each city, simplified to five major groups (A Tropical, B Arid, C Temperate, D Continental, E Polar)
+
+**lat / lon** — latitude and longitude of a given city
+
+Each visualization in the exhibit pulls a different combination of these variables into focus. The ridgeline plot lays out precipitation distributions across climate groups, while the histogram reveals just how unevenly American cities are scattered along the elevation axis. The dumbbell chart zooms in on the rugged terrain around mountain cities, the lollipop chart ranks the windiest states, and the raincloud plot shows how far different climates sit from the coast. Finally, an animated map ties everything back to geography, sweeping through climate groups one at a time. 
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(ggridges)
+library(ggalt)
+library(ggcharts)
+library(ggrain)
+library(gganimate)
+library(gifski)
+library(knitr)
+
+cities <- read.csv("cities.csv")
+cities$climate_group <- substr(cities$koppen, 1, 1)
+```
+
+## Plot 1: Table
+
+The table below summarizes the four numeric variables — precipitation, elevation, wind, and distance to coast — averaged across each of the four major Köppen climate groups represented in the dataset. It gives a quick numerical baseline for the patterns the rest of the exhibit explores visually: arid (B) cities sit high and far from the coast, temperate (C) cities are the wettest, and continental (D) cities are the windiest on average.
+
+```{r}
+cities$climate_group <- substr(cities$koppen, 1, 1)
+
+summary_table <- cities %>%
+  group_by(climate_group) %>%
+  summarise(
+    `# Cities`            = n(),
+    `Avg Precip (in)`     = round(mean(avg_annual_precip,  na.rm = TRUE), 1),
+    `Avg Elevation (m)`   = round(mean(elevation,          na.rm = TRUE), 0),
+    `Avg Wind (m/s)`      = round(mean(wind,               na.rm = TRUE), 2),
+    `Avg Dist. Coast (km)`= round(mean(distance_to_coast,  na.rm = TRUE), 0)
+  ) %>%
+  rename(`Climate Group` = climate_group)
+
+kable(summary_table,
+      caption = "Average climate and geography by Köppen group, across U.S. cities.")
+```
+
+
+## Plot 2: Elevation vs. Precipitation
+
+Each point here is a single U.S. city, plotted by its elevation against its annual rainfall and colored by climate group. The dashed regression lines reveal that the relationship between altitude and precipitation isn't universal — arid cities (B) stay dry no matter how high they sit, while temperate cities (C) show much wider variation. The plot is a quick way to see that geography alone doesn't dictate rainfall; climate type matters more.
+
+```{r}
+p1 <- ggplot(cities, aes(elevation, avg_annual_precip, color = cities$climate_group)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Elevation vs. Annual Precipitation",
+       x = "Elevation (m)", y = "Precipitation (in)", color = "Climate")
+ggsave("plot1_elevation_precip.png", p1, width = 8, height = 5)
+p1
+```
+
+
+## Plot 3: Elevation Distribution
+
+This histogram counts how many U.S. cities fall into each elevation bracket, with bars stacked by climate group. Most American cities live below 500 meters — the long tail to the right is dominated almost entirely by arid (B) and a few continental (D) cities in the Mountain West. The visual quickly shows that high-elevation living in the U.S. is a regional phenomenon, concentrated in dry climates.
+
+```{r}
+p2 <- ggplot(cities, aes(elevation, fill = cities$climate_group)) +
+  geom_histogram(bins = 30, color = "white") +
+  labs(title = "Distribution of City Elevations",
+       x = "Elevation (m)", y = "Number of Cities", fill = "Climate") +
+  theme_minimal()
+ggsave("plot2_histogram_elevation.png", p2, width = 8, height = 5)
+p2
+```
+
+
+## Plot 4: 4km vs. 8km Terrain Ruggedness
+
+A dumbbell chart comparing the elevation change within a 4 km radius (orange) and an 8 km radius (blue) for the twenty most rugged cities in the dataset. The longer the bar, the more the terrain "opens up" as you zoom out — a sign of cities perched on the edge of dramatic mountain ranges. 
+
+```{r}
+top_rugged <- cities %>%
+  arrange(desc(cities$elevation_change_eight)) %>%
+  slice(1:20) %>%
+  mutate(city = reorder(city, elevation_change_eight))
+
+p3 <- ggplot(top_rugged, aes(y = city,
+                              x = elevation_change_four,
+                              xend = elevation_change_eight)) +
+  geom_dumbbell(size = 1.2, colour = "grey70",
+                colour_x = "#1B263B", colour_xend = "#0072B2",
+                size_x = 3, size_xend = 3) +
+  labs(title = "Terrain Ruggedness: 4 km vs. 8 km Elevation Change",
+       subtitle = "Orange = within 4 km   Blue = within 8 km",
+       x = "Elevation Change (m)", y = NULL) +
+  theme_minimal()
+ggsave("plot3_dumbbell_terrain.png", p3, width = 9, height = 6)
+p3
+```
+
+
+## Plot 5: Windiest States
+
+A lollipop chart ranking the twenty windiest U.S. states by their average city wind speed. The Great Plains and Mountain West dominate the top of the list — open, flat or high-elevation terrain that does little to slow the wind down. This view aggregates the city-level wind variable up to the state level, offering a regional summary instead of a city-by-city picture.
+
+```{r}
+state_wind <- cities %>%
+  group_by(state) %>%
+  summarise(mean_wind = mean(wind)) %>%
+  arrange(desc(mean_wind)) %>%
+  slice(1:20)
+
+p4 <- lollipop_chart(state_wind, state, mean_wind,
+                     point_color = "#0072B2",
+                     line_color = "grey70") +
+  labs(title = "Top 20 Windiest States (Mean Wind Speed)",
+       x = "Mean Wind Speed (m/s)", y = "State")
+ggsave("plot4_lollipop_wind.png", p4, width = 8, height = 7)
+p4
+```
+
+
+## Plot 6: Distance to Coast by Climate Group
+
+A raincloud plot — a hybrid of a violin (showing distribution shape), a boxplot (summary stats), and a strip plot (individual cities) — comparing how far cities in each climate group sit from the nearest coast. Temperate (C) cities cluster near the ocean, while arid (B) and continental (D) cities sit deep in the interior. The visual makes the climate-geography link explicit: distance from water is a strong predictor of climate type in the U.S.
+
+```{r}
+cities$climate_group <- substr(cities$koppen, 1, 1)
+
+p5 <- ggplot(cities, aes(cities$climate_group, distance_to_coast, fill = cities$climate_group)) +
+  geom_rain(alpha = 0.6) +
+  labs(title = "Distance to Coast by Climate Group",
+       x = "Climate Group", y = "Distance to Coast (km)") +
+  theme_minimal() + theme(legend.position = "none")
+ggsave("plot5_rain_coast.png", p5, width = 8, height = 5)
+p5
+```
+
+
+## Plot 7: Cities by Climate Group (Animated)
+
+An animated geographic scatter that cycles through the four climate groups one at a time. Each frame highlights the cities belonging to that group, with point size reflecting annual precipitation. The animation reveals the regional footprint of each climate type: temperate cities blanket the East and West coasts, continental cities form a band across the northern interior, and arid cities cluster in the Mountain West.
+
+```{r}
+anim <- ggplot(cities, aes(lon, lat, size = avg_annual_precip,
+                            color = climate_group)) +
+  geom_point(alpha = 0.8) +
+  scale_size_continuous(range = c(2, 8)) +
+  labs(title = "U.S. Cities — Climate Group: {closest_state}",
+       x = "Longitude", y = "Latitude",
+       size = "Precip (in)", color = "Climate") +
+  theme_minimal() +
+  transition_states(climate_group, transition_length = 2, state_length = 2) +
+  enter_fade() + exit_fade()
+
+#anim_save("plot6_animated_climate.gif",
+ #         animate(anim, width = 500, height = 300, fps = 3, duration = 4,
+ #                 renderer = gifski_renderer()))
+anim
+```
+
+
+## Bootstrap Interval on Annual Precipitation (Beamer Slides)
+```{r}
+knitr::include_graphics("BEAMER1.png")
+knitr::include_graphics("BEAMER2.png")
+knitr::include_graphics("BEAMER3.png")
+knitr::include_graphics("BEAMER4.png")
+knitr::include_graphics("BEAMER5.png")
+knitr::include_graphics("BEAMER6.png")
+```
+

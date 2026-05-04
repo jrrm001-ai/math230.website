@@ -1,0 +1,62 @@
+---
+title: "Bootstrap Interval on Annual Precipitation"
+author: "JJ Rivera"
+date: "`r Sys.Date()`"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r}
+cities <- read.csv("cities.csv")
+```
+
+## Bootstrap interval on avg_annaul_precip
+```{r}
+library(ggplot2)
+
+precip <- na.omit(cities$avg_annual_precip)
+
+ggplot() +
+  geom_histogram(
+    aes(x = precip, y = after_stat(density)),
+    bins = 20,
+    fill = "#B0E0E6",
+    alpha = 0.7) +
+  labs(x = "Annual Precipitation (in)",
+       title = "Distribution of the Original Sample") +
+  geom_density(aes(x = precip), col = "#415A77") +
+  geom_vline(xintercept = mean(precip), col = "#415A77")
+
+mean(precip)
+```
+
+```{r}
+set.seed(230)
+
+n <- length(precip)
+bootstrap.means <- NULL
+
+for (b in 1:10000) {
+  my.resample <- sample(precip, n, replace = TRUE)
+  bootstrap.means[b] <- mean(my.resample)
+}
+
+ggplot() +
+  geom_histogram(
+    aes(x = bootstrap.means, y = after_stat(density)),
+    bins = 20,
+    fill = "black",
+    alpha = 0.7) +
+  labs(x = "Bootstrap Mean Values",
+       title = "Bootstrap Distribution for the Mean") +
+  geom_density(aes(x = bootstrap.means), col = "#B0E0E6") +
+  geom_vline(xintercept = mean(precip), col = "#B0E0E6")
+```
+```{r}
+quantile(bootstrap.means, c(0.025, 0.975))
+```
+
