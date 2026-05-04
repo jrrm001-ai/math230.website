@@ -11,6 +11,6 @@ navbar:
       href: about.html
     - text: "Past Data Visualizations"
       href: pastdatavisualizations.html
-    - text: "Cities"
+    - text: "Climate Visualizations"
       href: Cities.html
 output: distill::distill_article
