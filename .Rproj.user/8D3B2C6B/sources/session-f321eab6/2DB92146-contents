@@ -1,7 +1,7 @@
 ---
 title: "About this site"
 description: |
-  Some additional details about the website
+  This website is a collection of work I did in MATH230, Data Visualization and Computation, along with some new data exhibits I built outside of class. The projects here explore real-world datasets on climate patterns across U.S. cities using R, ggplot2, and a handful of specialized visualization packages like aRtsy, patchwork, ggridges, and gganimate. My goal across all of it is the same: turn raw data into something you can actually feel, whether that's a chart, an infographic, or a generative art piece. Thank you for your time.
 ---
 
 ```{r setup, include=FALSE}
