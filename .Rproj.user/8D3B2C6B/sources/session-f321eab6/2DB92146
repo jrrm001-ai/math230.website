@@ -3,7 +3,7 @@
     "path": "~/Desktop/MATH230Website/math230.website/about.Rmd",
     "project_path": "about.Rmd",
     "type": "r_markdown",
-    "hash": "2060440738",
+    "hash": "2339875306",
     "contents": "",
     "dirty": false,
     "created": 1776882456278.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "4,0",
+        "cursorPosition": "1,24",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1777941970,
+    "lastKnownWriteTime": 1777942105,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1777941970734,
+    "last_content_update": 1777942105744,
     "read_only": false,
     "read_only_alternatives": []
 }
