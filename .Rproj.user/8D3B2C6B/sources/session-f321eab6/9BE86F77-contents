@@ -1,7 +1,5 @@
-name: "math230.website"
+name: "math230-website"
 title: "230 Website"
-description: |
-  230 Website
 output_dir: "docs"
 navbar:
   right:
@@ -12,5 +10,4 @@ navbar:
     - text: "Past Data Visualizations"
       href: pastdatavisualizations.html
     - text: "Climate Visualizations"
-      href: climatevisualizations.html
-output: distill::distill_website
+      href: Cities.html

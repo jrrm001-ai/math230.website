@@ -1,8 +1,10 @@
 ---
 title: "Cities Data"
-description: |
-  Some cool stuff with new data!
-output: distill::distill_website 
+description: "Some cool stuff with new data"
+author:
+  - name: JJ Rivera
+date: "`r Sys.Date()`"
+output: distill::distill_article
 ---
 
 ```{r setup, include=FALSE}

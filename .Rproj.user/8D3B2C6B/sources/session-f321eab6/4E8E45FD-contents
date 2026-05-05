@@ -2,7 +2,7 @@
 title: "The Climate Atlas"
 description: |
   Welcome to the website. I hope you enjoy it!
-site: distill::distill_website 
+site: distill::distill_website
 ---
 
 ```{r setup, include=FALSE}
@@ -29,7 +29,7 @@ sky_palette1 <- c("#1B263B", "#415A77", "#778DA9")
 sky_palette2 <- c("#5D6D7E", "#AED6F1", "#D6E4F0")
 sky_palette3 <- c("#B0E0E6", "#FFFFFF", "#EAF4F4")
 
-
+# Three flow canvases (your existing art)
 art1 <- canvas_flow(colors = sky_palette1, background = "#0B1320",
                     lines = 1200, lwd = 0.4)
 art2 <- canvas_flow(colors = sky_palette2, background = "white",
@@ -44,6 +44,9 @@ header <- ggplot() +
   annotate("text", x = 0.5, y = 0.42, hjust = 0.5, size = 5,
            color = "#415A77",
            label = "A Visual Exhibit of Climate in 226 U.S. Cities") +
+  annotate("text", x = 0.5, y = 0.15, hjust = 0.5, size = 3.6,
+           color = "#778DA9", fontface = "italic",
+           label = "Maps. Mountains. Monsoons. Step into the data.") +
   xlim(0, 1) + ylim(0, 1) +
   theme_void() +
   theme(plot.background = element_rect(fill = "white", color = NA))

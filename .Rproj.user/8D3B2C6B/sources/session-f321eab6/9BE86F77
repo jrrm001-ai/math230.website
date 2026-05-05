@@ -3,7 +3,7 @@
     "path": "~/Desktop/MATH230Website/math230.website/_site.yml",
     "project_path": "_site.yml",
     "type": "yaml",
-    "hash": "3402954559",
+    "hash": "215236447",
     "contents": "",
     "dirty": false,
     "created": 1776882456417.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "15,32",
+        "cursorPosition": "12,23",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1777941064,
+    "lastKnownWriteTime": 1777941455,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1777941064150,
+    "last_content_update": 1777941455636,
     "read_only": false,
     "read_only_alternatives": []
 }
