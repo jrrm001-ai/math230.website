@@ -163,21 +163,7 @@ p5
 An animated geographic scatter that cycles through the four climate groups one at a time. Each frame highlights the cities belonging to that group, with point size reflecting annual precipitation. The animation reveals the regional footprint of each climate type: temperate cities blanket the East and West coasts, continental cities form a band across the northern interior, and arid cities cluster in the Mountain West.
 
 ```{r}
-anim <- ggplot(cities, aes(lon, lat, size = avg_annual_precip,
-                            color = climate_group)) +
-  geom_point(alpha = 0.8) +
-  scale_size_continuous(range = c(2, 8)) +
-  labs(title = "U.S. Cities — Climate Group: {closest_state}",
-       x = "Longitude", y = "Latitude",
-       size = "Precip (in)", color = "Climate") +
-  theme_minimal() +
-  transition_states(climate_group, transition_length = 2, state_length = 2) +
-  enter_fade() + exit_fade()
-
-#anim_save("plot6_animated_climate.gif",
- #         animate(anim, width = 500, height = 300, fps = 3, duration = 4,
- #                 renderer = gifski_renderer()))
-anim
+knitr::include_graphics("plot6_animated_climate.gif")
 ```
 
 
