@@ -10,3 +10,4 @@
 "0","  labs(title = ""Top 20 Windiest States (Mean Wind Speed)"","
 "0","       x = ""Mean Wind Speed (m/s)"", y = ""State"")"
 "0","ggsave(""plot4_lollipop_wind.png"", p4, width = 8, height = 7)"
+"0","p4"

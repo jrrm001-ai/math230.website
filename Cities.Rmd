@@ -2,7 +2,7 @@
 title: "Cities Data"
 description: |
   Some cool stuff with new data!
-output: distill::distill_website
+output: distill::distill_website 
 ---
 
 ```{r setup, include=FALSE}
@@ -148,7 +148,7 @@ A raincloud plot — a hybrid of a violin (showing distribution shape), a boxplo
 ```{r}
 cities$climate_group <- substr(cities$koppen, 1, 1)
 
-p5 <- ggplot(cities, aes(cities$climate_group, distance_to_coast, fill = cities$climate_group)) +
+p5 <- ggplot(cities, aes(climate_group, distance_to_coast, fill = climate_group)) +
   geom_rain(alpha = 0.6) +
   labs(title = "Distance to Coast by Climate Group",
        x = "Climate Group", y = "Distance to Coast (km)") +
