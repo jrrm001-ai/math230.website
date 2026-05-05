@@ -2,7 +2,7 @@
 title: "Past Data Visualizations"
 description: |
   Here are some data visualizations that I made in MATH230!
-output: distill::distill_article
+output: distill::distill_website
 ---
 
 ```{r setup, include=FALSE}
